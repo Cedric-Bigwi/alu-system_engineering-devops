@@ -6,7 +6,7 @@ apt-get update -y
 apt-get install -y nginx
 
 # Configure nginx to serve "Holberton School" at root
-echo "Holberton School" > /var/www/html/index.nginx-debian.html
+echo "Holberton School for the win!" > /var/www/html/index.nginx-debian.html
 
 # Make sure nginx is listening on port 80
 sed -i 's/listen 80 default_server;/listen 80 default_server;\n\tserver_name _;/g' /etc/nginx/sites-available/default
