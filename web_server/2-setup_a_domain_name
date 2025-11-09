@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Contains the domain name registered for the project (e.g., myschool.tech)
+# Replace 'example.tech' with your actual domain.
+
+echo "example.tech"

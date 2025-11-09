@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Configures Nginx to redirect /redirect_me to a specific URL using 301 Moved Permanently.
+
+apt-get update -y
+apt-get install -y nginx
+
+# Add redirect to default config
+sed -i '/server_name _;/a \\tlocation /redirect_me {\n\t\treturn 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;\n\t}' /etc/nginx/sites-enabled/default
+
+service nginx restart

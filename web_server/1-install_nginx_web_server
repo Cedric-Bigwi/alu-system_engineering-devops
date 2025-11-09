@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Installs and configures Nginx to serve a page containing 'Holberton School' on port 80.
+
+apt-get update -y
+apt-get install -y nginx
+
+# Replace default index page content
+echo "Holberton School for the win!" > /var/www/html/index.nginx-debian.html
+
+# Ensure Nginx is listening on port 80
+sed -i 's/listen 80 default_server;/listen 80 default_server;/g' /etc/nginx/sites-enabled/default
+
+# Restart Nginx without using systemctl
+service nginx restart
