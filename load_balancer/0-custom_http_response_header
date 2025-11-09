@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# Configures Nginx to add a custom HTTP header X-Served-By
+
+# Install Nginx if not already installed
+apt-get update
+apt-get install -y nginx
+
+mkdir -p /var/www/html
+echo "Holberton School for the win!" > /var/www/html/index.html
+echo "Ceci n'est pas une page" > /var/www/html/404.html
+
+HOSTNAME=$(hostname)
+
+printf %s "server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    root /var/www/html;
+    index index.html index.htm;
+    server_name _;
+    add_header X-Served-By $HOSTNAME always;
+    location / {
+        try_files \$uri \$uri/ =404;
+    }
+    location /redirect_me {
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+    }
+    error_page 404 /404.html;
+    location = /404.html {
+        root /var/www/html;
+        internal;
+    }
+}
+" > /etc/nginx/sites-available/default
+
+service nginx restart
