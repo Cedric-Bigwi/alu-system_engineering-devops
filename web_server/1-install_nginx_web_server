@@ -1,23 +1,15 @@
 #!/usr/bin/env bash
 # Script that installs and configures Nginx to serve a page containing "Holberton School"
 
-# Update package list
-sudo apt-get update -y
+# Update and install nginx
+apt-get update -y
+apt-get install -y nginx
 
-# Check if nginx is already installed
-if ! dpkg -l | grep -q nginx; then
-    sudo apt-get install -y nginx
-fi
+# Configure nginx to serve "Holberton School" at root
+echo "Holberton School" > /var/www/html/index.nginx-debian.html
 
-# Ensure nginx is enabled and running
-sudo systemctl enable nginx
-sudo systemctl start nginx
+# Make sure nginx is listening on port 80
+sed -i 's/listen 80 default_server;/listen 80 default_server;\n\tserver_name _;/g' /etc/nginx/sites-available/default
 
-# Create the web root directory if it doesn't exist
-sudo mkdir -p /var/www/html
-
-# Write the required content to the index page
-echo "Holberton School" | sudo tee /var/www/html/index.nginx-debian.html > /dev/null
-
-# Restart nginx to apply changes
-sudo systemctl restart nginx
+# Restart nginx (without using systemctl)
+service nginx restart
