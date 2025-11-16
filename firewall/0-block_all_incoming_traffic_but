@@ -1,0 +1,21 @@
+# 1. Install ufw if not already installed
+sudo apt update
+sudo apt install -y ufw
+
+# 2. Reset UFW to clear existing rules
+sudo ufw reset
+
+# 3. Set default policies: deny all incoming, allow all outgoing
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+
+# 4. Allow specific ports
+sudo ufw allow 22/tcp   # SSH
+sudo ufw allow 80/tcp   # HTTP
+sudo ufw allow 443/tcp  # HTTPS SSL
+
+# 5. Enable UFW
+sudo ufw --force enable
+
+# 6. Verify status and rules
+sudo ufw status verbose
