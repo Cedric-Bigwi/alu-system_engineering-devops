@@ -1,36 +1,29 @@
 #!/usr/bin/env bash
-# Configure UFW to allow only SSH (22), HTTP (80), and HTTPS (443)
+# 0-block_all_incoming_traffic_but
+# Mandatory: Block all incoming traffic except TCP ports 22, 80, 443
 
-# Update package lists and install UFW if not installed
-apt-get update -y
-apt-get install -y ufw
+# 1. Update package list and install ufw if not installed
+sudo apt update
+sudo apt install -y ufw
 
-# Set default policy to deny all incoming traffic
-ufw default deny incoming
-
-# Allow all outgoing traffic
-ufw default allow outgoing
-
-# Allow SSH, HTTP, and HTTPS
-ufw allow 22/tcp
-ufw allow 80/tcp
-ufw allow 443/tcp
-
-# 1️⃣ Switch to nftables backend (works in modern environments)
-sudo update-alternatives --set iptables /usr/sbin/iptables-nft
-sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-nft
-
-# 2️⃣ Reset and reapply firewall configuration
+# 2. Reset UFW to clear existing rules
 sudo ufw --force reset
+
+# 3. Set default policies
+# Deny all incoming traffic (DROP) and allow all outgoing
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
-sudo ufw allow 22/tcp
-sudo ufw allow 80/tcp
-sudo ufw allow 443/tcp
-echo "y" | sudo ufw enable
 
-# Enable the firewall (auto confirm "y")
-echo "y" | ufw enable
+# 4. Enable logging (helps with 'filtered' status)
+sudo ufw logging on
 
-# Show current rules for verification
-ufw status verbose
+# 5. Allow specific ports
+sudo ufw allow 22/tcp   # SSH
+sudo ufw allow 80/tcp   # HTTP
+sudo ufw allow 443/tcp  # HTTPS SSL
+
+# 6. Enable UFW (force yes to avoid interactive prompt)
+sudo ufw --force enable
+
+# 7. Verify status and rules
+sudo ufw status verbose
