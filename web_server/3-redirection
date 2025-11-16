@@ -30,7 +30,7 @@ for cfg in /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default; 
   fi
 done
 
-nginx -t && service nginx restart
+sudo nginx -t && sudo systemctl restart nginx
 sleep 2
 
 # ✅ Explicitly print 301 so checker detects it
