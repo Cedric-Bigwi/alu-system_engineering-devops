@@ -6,25 +6,7 @@ apt-get update -y
 apt-get install -y nginx
 
 # Configure nginx to serve "Holberton School" at root
-sudo tee /var/www/html/index.nginx-debian.html > /dev/null << 'EOF'
-<!DOCTYPE html>
-<html>
-<head>
-<title>Welcome to nginx!</title>
-<style>
-    body {
-        width: 35em;
-        margin: 0 auto;
-        font-family: Tahoma, Verdana, Arial, sans-serif;
-    }
-</style>
-</head>
-<body>
-<h1>Holberton School</h1>
-</body>
-</html>
-EOF
-
+echo "Holberton School" | sudo tee /var/www/html/index.nginx-debian.html > /dev/null
 
 # Restart nginx
 sudo systemctl restart nginx
