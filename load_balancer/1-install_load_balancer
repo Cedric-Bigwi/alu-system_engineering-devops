@@ -42,7 +42,8 @@ backend http_back
     balance roundrobin
     server 6845-web-01 54.172.16.102:80 check
     server 6845-web-02 18.233.224.205:80 check
+    http-response set-header X-Served-By %[srv_name]
 EOF
 
 # Restart HAProxy to apply configuration
-service haproxy start
+sudo systemctl restart haproxy
