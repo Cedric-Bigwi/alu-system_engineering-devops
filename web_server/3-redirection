@@ -4,25 +4,7 @@
 apt-get update -y
 apt-get install -y nginx
 
-sudo tee /var/www/html/index.nginx-debian.html > /dev/null << 'EOF'
-<!DOCTYPE html>
-<html>
-<head>
-<title>Welcome to nginx!</title>
-<style>
-    body {
-        width: 35em;
-        margin: 0 auto;
-        font-family: Tahoma, Verdana, Arial, sans-serif;
-    }
-</style>
-</head>
-<body>
-<h1>Holberton School</h1>
-</body>
-</html>
-EOF
-
+echo "Holberton School" | sudo tee /var/www/html/index.nginx-debian.html > /dev/null
 
 for cfg in /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default; do
   if [ -f "$cfg" ] && ! grep -q "redirect_me" "$cfg"; then
