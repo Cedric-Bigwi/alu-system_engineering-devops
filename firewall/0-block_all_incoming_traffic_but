@@ -10,9 +10,13 @@ sudo apt install -y ufw
 sudo ufw --force reset
 
 # 3. Set default policies
-# Deny all incoming traffic (DROP) and allow all outgoing
+# Deny all incoming (DROP) and allow all outgoing
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
+
+# Force DROP instead of REJECT
+sudo sed -i 's/^DEFAULT_INPUT_POLICY=".*/DEFAULT_INPUT_POLICY="DROP"/' /etc/default/ufw
+sudo sed -i 's/^DEFAULT_FORWARD_POLICY=".*/DEFAULT_FORWARD_POLICY="DROP"/' /etc/default/ufw
 
 # 4. Enable logging (helps with 'filtered' status)
 sudo ufw logging on
