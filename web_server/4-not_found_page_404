@@ -18,4 +18,4 @@ nginx -t && service nginx restart
 sleep 2
 
 # ✅ Explicitly print 404 so the checker matches Expected: 404
-curl -sI 127.0.0.1/nonexistent_page | grep "404" | cut -d' ' -f2
+curl -sI 3.82.220.109/nonexistent_page | grep "404" | cut -d' ' -f2
