@@ -9,8 +9,11 @@ echo "Ceci n'est pas une page" | sudo tee /var/www/html/custom_404.html > /dev/n
 
 # Inject error_page directive into nginx config
 for cfg in /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default; do
-  if [ -f "$cfg" ] && ! grep -q "custom_404.html" "$cfg"; then
-    sudo sed -i '/server_name _;/a \\terror_page 404 /custom_404.html;\n\tlocation = /custom_404.html {\n\t\tinternal;\n\t}' "$cfg"
+  if [ -f "$cfg" ]; then
+    # Add custom 404 if not present
+    if ! grep -q "custom_404.html" "$cfg"; then
+      sudo sed -i '/server_name _;/a \\terror_page 404 /custom_404.html;\n\tlocation = /custom_404.html {\n\t\tinternal;\n\t}' "$cfg"
+    fi
   fi
 done
 
