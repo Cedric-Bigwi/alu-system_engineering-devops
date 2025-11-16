@@ -1,27 +1,48 @@
-# /etc/ufw/before.rules
-# rules.before
-# Rules that should be run before the ufw command line added rules. Custom rules
-# should be added here.
+#!/usr/bin/env bash
+# 100-port_forwarding
+# Mandatory: Forward port 8080 → 80 on web-01
 
+# 1. Install ufw if not installed
+sudo apt update
+sudo apt install -y ufw
+
+# 2. Enable IPv4 forwarding in sysctl
+sudo sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/ufw/sysctl.conf
+sudo sysctl -p
+
+# 3. Reset UFW (optional, clears existing rules)
+sudo ufw --force reset
+
+# 4. Set default policies
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+
+# 5. Add allowed ports
+sudo ufw allow 22/tcp
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+
+# 6. Add port forwarding rule in /etc/ufw/before.rules
+sudo cp /etc/ufw/before.rules /etc/ufw/before.rules.bak
+sudo sed -i '/^*nat/,$d' /etc/ufw/before.rules  # Remove existing NAT section if any
+
+sudo tee -a /etc/ufw/before.rules > /dev/null <<EOL
 *nat
 :PREROUTING ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
 
-# Port forwarding rule: redirect port 8080 → 80
+# Forward port 8080 → 80
 -A PREROUTING -p tcp --dport 8080 -j REDIRECT --to-port 80
 
 COMMIT
+EOL
 
-*filter
-:ufw-before-input - [0:0]
-:ufw-before-output - [0:0]
-:ufw-before-forward - [0:0]
-:ufw-not-local - [0:0]
--A ufw-before-input -m state --state RELATED,ESTABLISHED -j ACCEPT
--A ufw-before-input -p icmp --icmp-type destination-unreachable -j ACCEPT
--A ufw-before-input -p icmp --icmp-type time-exceeded -j ACCEPT
--A ufw-before-input -p icmp --icmp-type parameter-problem -j ACCEPT
--A ufw-before-input -p icmp --icmp-type echo-request -j ACCEPT
--A ufw-before-output -j ACCEPT
--A ufw-before-forward -j ACCEPT
-COMMIT
+# 7. Enable UFW
+sudo ufw --force enable
+
+# 8. Reload UFW rules
+sudo ufw reload
+
+# 9. Show rules for verification
+sudo ufw status verbose
+sudo iptables -t nat -L -n -v
