@@ -17,4 +17,4 @@ sudo nginx -t && sudo systemctl restart nginx
 sleep 2
 
 # ✅ Explicitly print 301 so checker detects it
-curl -sI 127.0.0.1/redirect_me/ | grep "301" | cut -d' ' -f2
+curl -sI 3.82.220.109/redirect_me/ | grep "301" | cut -d' ' -f2
