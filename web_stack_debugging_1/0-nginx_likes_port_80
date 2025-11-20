@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 # Ensures Nginx is running and listening on port 80
 
+fuser -k 80/tcp || true 
+rm -f /var/run/nginx.pid
+
 ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 service nginx restart
