@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
-# Fix Nginx so it listens on port 80 by recreating the missing sites-enabled symlink
+# Ensure Nginx is installed, configured, and listening on port 80
+
+# Install nginx
+apt-get update -y
+apt-get install -y nginx
 
 # Recreate the default site symlink
 ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
-# Start nginx
+# Restart nginx to apply changes
 service nginx restart
