@@ -1,10 +1,18 @@
-#!/bin/bash
-# Install Nginx if needed
-apt-get update -qq
-apt-get install -y nginx
+#!/usr/bin/env bash
+# Fix Nginx so that it runs and listens on port 80
 
-# Ensure default site is enabled 
+apt-get update -y
+apt-get install -y nginx psmisc
+
+# Only use IPv4, disable IPv6 listen
+sed -i 's/listen \[::\]:80 default_server ipv6only=on;/#listen [::]:80 default_server ipv6only=on;/g' /etc/nginx/sites-available/default
+
+# Kill any process using port 80 and remove stale PID
+fuser -k 80/tcp || true
+rm -f /var/run/nginx.pid
+
+# Ensure default site is enabled
 ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
 # Start Nginx
-service nginx restart
+service nginx start
