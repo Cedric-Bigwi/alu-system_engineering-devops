@@ -5,6 +5,7 @@
 apt-get update
 apt-get install -y nginx
 
+
 # Replace default config with minimal working config
 cat > /etc/nginx/sites-available/default <<'EOF'
 server {
@@ -22,8 +23,9 @@ EOF
 # Ensure required directories exist
 mkdir -p /var/run/nginx
 
-# Stop any old Nginx instances
-pkill -f nginx 2>/dev/null || true
+nginx -t
+
+service nginx status
 
 # Start Nginx
 service nginx start
