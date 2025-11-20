@@ -1,11 +1,10 @@
-#!/usr/bin/env bash
-# Ensures Nginx is running and listening on port 80
+#!/bin/bash
+# Install Nginx if needed
+apt-get update -qq
+apt-get install -y nginx
 
-apt-get update -y 
-apt-get install -y nginx psmisc
-
-fuser -k 80/tcp || true 
-rm -f /var/run/nginx.pid
-
+# Ensure default site is enabled 
 ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+
+# Start Nginx
 service nginx restart
