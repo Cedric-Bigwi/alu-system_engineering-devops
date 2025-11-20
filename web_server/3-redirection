@@ -16,7 +16,7 @@ for cfg in /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default; 
 done
 
 # Test config and restart nginx safely
-sudo nginx -t && sudo systemctl restart nginx
+sudo nginx -t && sudo service nginx restart
 sleep 2
 
 # ✅ Explicitly print 301 so checker detects it
