@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Script to install Nginx and ensure it listens on port 80
+# Script to install Nginx, fix its configuration to listen on all IPv4 addresses, and start the service
 
 # Update package index and install Nginx
 apt-get update
@@ -7,6 +7,13 @@ apt-get install -y nginx
 
 # Make sure Nginx listens on all IPv4 interfaces
 sed -i 's/listen 80 default_server;/listen 80 default_server;/' /etc/nginx/sites-available/default
+sed -i 's/listen \[::\]:80 default_server;/listen 80 default_server;/' /etc/nginx/sites-available/default
+
+# Ensure required directories exist
+mkdir -p /var/run/nginx
+
+# Stop any old Nginx instances just in case
+pkill -f nginx 2>/dev/null || true
 
 # Start Nginx
 service nginx start
