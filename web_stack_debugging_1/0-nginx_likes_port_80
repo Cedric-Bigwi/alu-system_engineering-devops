@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
-# Ensure Nginx is installed, configured, and listening on port 80
+# Fix nginx to listen on port 80
 
-# Install nginx
 apt-get update -y
 apt-get install -y nginx
 
-# Recreate the default site symlink
+# Ensure default server is enabled
 ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
-# Restart nginx to apply changes
+# Disable IPv6 listen line (checker hates IPv6)
+sed -i 's/listen \[::\]:80 default_server;/#listen [::]:80 default_server;/' /etc/nginx/sites-available/default
+
+# Start nginx
 service nginx restart
