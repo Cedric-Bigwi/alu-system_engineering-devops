@@ -1,31 +1,14 @@
 #!/usr/bin/env bash
-# Install Nginx and configure it to listen on all IPv4 addresses on port 80
+# Fix Nginx so it listens on port 80 by recreating the missing sites-enabled symlink
 
-# Update and install Nginx
-apt-get update
-apt-get install -y nginx
+# Install nginx if not installed
+apt-get update -y
 
+# Recreate the default site symlink
+ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
-# Replace default config with minimal working config
-cat > /etc/nginx/sites-available/default <<'EOF'
-server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-    root /usr/share/nginx/html;
-    index index.html index.htm;
-    server_name _;
-    location / {
-        try_files $uri $uri/ =404;
-    }
-}
-EOF
+# Ensure nginx is not running
+service nginx stop 2>/dev/null
 
-# Ensure required directories exist
-mkdir -p /var/run/nginx
-
-nginx -t
-
-service nginx status
-
-# Start Nginx
+# Start nginx
 service nginx start
