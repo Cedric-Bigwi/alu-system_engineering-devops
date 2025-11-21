@@ -1,11 +1,6 @@
 #!/usr/bin/env bash
 # Fix Nginx so that it runs and listens on port 80
 
-apt-get update -y
-apt-get install -y nginx psmisc
-
-# Only use IPv4, disable IPv6 listen
-sed -i 's/listen \[::\]:80 default_server ipv6only=on;/#listen [::]:80 default_server ipv6only=on;/g' /etc/nginx/sites-available/default
 
 # Kill any process using port 80 and remove stale PID
 fuser -k 8080/tcp || true
@@ -15,4 +10,4 @@ rm -f /var/run/nginx.pid
 ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
 # Start Nginx
-service nginx start
+service nginx restart
