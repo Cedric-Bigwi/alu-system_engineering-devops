@@ -1,13 +1,8 @@
 #!/usr/bin/env bash
 # Fix Nginx so that it runs and listens on port 80
 
-
-# Kill any process using port 80 and remove stale PID
-fuser -k 8080/tcp || true
 rm -f /var/run/nginx.pid
 
-# Ensure default site is enabled
 ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
-# Start Nginx
 service nginx restart
