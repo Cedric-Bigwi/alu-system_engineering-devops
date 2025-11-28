@@ -15,8 +15,8 @@ chown -R nginx:nginx /run/nginx
 nginx -t
 
 # Kill any process on port 8080
-kill -9 $(sudo netstat -tulpn | grep :8080 | awk '{print $7}' | cut -d'/' -f1)
+kill -9 "$(sudo netstat -tulpn | grep :8080 | awk '{print $7}' | cut -d'/' -f1)"
 
 # Restart Nginx 
-service nginx restart
+service nginx restart || service nginx start
 
