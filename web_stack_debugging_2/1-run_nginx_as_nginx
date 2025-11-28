@@ -15,8 +15,7 @@ chown -R nginx:nginx /run/nginx
 nginx -t
 
 # Kill any process on port 8080 if it exists
-PID_TO_KILL=$(sudo ss -tulpn | grep ':8080' | awk '{print $NF}' | cut -d'/' -f1)
-[ -n "$PID_TO_KILL" ] && sudo kill -9 "$PID_TO_KILL"
+kill -9 "$(sudo netstat -tulpn | grep :8080 | awk '{print $7}' | cut -d'/' -f1)"
 
 # Start Nginx
 service nginx start || service nginx restart
