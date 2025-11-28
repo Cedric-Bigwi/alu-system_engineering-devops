@@ -1,21 +1,20 @@
 #!/usr/bin/env bash
 # Configure Nginx to run as nginx user and listen on port 8080
 
+# Update nginx user and port
 sed -i 's/#user www-data;/user nginx;/' /etc/nginx/nginx.conf
 sed -i 's/listen 80 default_server;/listen 8080 default_server;/' /etc/nginx/sites-available/default
 sed -i 's/listen \[::\]:80 default_server ipv6only=on;/listen [::]:8080 default_server ipv6only=on;/' /etc/nginx/sites-available/default
 
-# Fix directory ownership
-chown -R nginx:nginx /var/log/nginx
-chown -R nginx:nginx /var/lib/nginx
+# Ensure directories exist and have correct ownership
 mkdir -p /run/nginx
-chown -R nginx:nginx /run/nginx
+chown -R nginx:nginx /var/log/nginx /var/lib/nginx /run/nginx
+
+# Remove any stale pid file
+rm -f /run/nginx.pid
 
 # Test configuration
 nginx -t
-
-# Kill any process on port 8080 if it exists
-kill -9 "$(sudo netstat -tulpn | grep :8080 | awk '{print $7}' | cut -d'/' -f1)"
 
 # Start Nginx
 service nginx start || service nginx restart
