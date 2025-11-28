@@ -6,8 +6,12 @@ sed -i 's/#user www-data;/user nginx;/' /etc/nginx/nginx.conf
 sed -i 's/listen 80 default_server;/listen 8080 default_server;/' /etc/nginx/sites-available/default
 sed -i 's/listen \[::\]:80 default_server ipv6only=on;/listen [::]:8080 default_server ipv6only=on;/' /etc/nginx/sites-available/default
 
+# Ensure the user exist
+sudo useradd -r -s /sbin/nologin nginx
+
 # Ensure directories exist and have correct ownership
 mkdir -p /run/nginx
+chown nginx:nginx /run/nginx
 chown -R nginx:nginx /var/log/nginx /var/lib/nginx /run/nginx
 
 # Remove any stale pid file
