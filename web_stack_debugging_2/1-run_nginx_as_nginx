@@ -14,11 +14,8 @@ chown -R nginx:nginx /run/nginx
 # Test configuration
 nginx -t
 
-# Install fuser
-sudo apt update && sudo apt install psmisc
-
 # Kill any process on port 8080
-fuser -k -n tcp 8080
+kill -9 $(sudo netstat -tulpn | grep :8080 | awk '{print $7}' | cut -d'/' -f1)
 
 # Restart Nginx 
 service nginx restart
