@@ -1,24 +1,25 @@
 #!/usr/bin/env bash
 # Configure Nginx to run as nginx user and listen on port 8080
 
-# Update nginx user and port
+# Update config
 sed -i 's/#user www-data;/user nginx;/' /etc/nginx/nginx.conf
 sed -i 's/listen 80 default_server;/listen 8080 default_server;/' /etc/nginx/sites-available/default
 sed -i 's/listen \[::\]:80 default_server ipv6only=on;/listen [::]:8080 default_server ipv6only=on;/' /etc/nginx/sites-available/default
 
-# Ensure the user exist
-sudo useradd -r -s /sbin/nologin nginx
-
-# Ensure directories exist and have correct ownership
-mkdir -p /run/nginx
-chown nginx:nginx /run/nginx
+# Fix permissions
 chown -R nginx:nginx /var/log/nginx /var/lib/nginx /run/nginx
+mkdir -p /run/nginx
+chown -R nginx:nginx /run/nginx
 
-# Remove any stale pid file
+# Remove stale PID
 rm -f /run/nginx.pid
 
-# Test configuration
+# Kill any process on port 8080
+PID_TO_KILL=$(ss -tulpn | grep ':8080' | awk '{print $NF}' | cut -d'/' -f1)
+[ -n "$PID_TO_KILL" ] && kill -9 "$PID_TO_KILL"
+
+# Test config
 nginx -t
 
 # Start Nginx
-service nginx start || service nginx restart
+service nginx start
