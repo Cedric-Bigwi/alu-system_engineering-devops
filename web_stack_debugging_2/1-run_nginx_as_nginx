@@ -32,4 +32,4 @@ pkill -9 nginx || true
 pkill -9 apache2 || true
 
 # Restart Nginx 
-service nginx restart
+su -s /bin/bash -c "/usr/sbin/nginx -g 'daemon off;'" nginx & sleep 2
