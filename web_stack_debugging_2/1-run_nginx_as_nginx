@@ -3,8 +3,16 @@
 
 sed -i 's/#user www-data;/user nginx;/' /etc/nginx/nginx.conf
 sed -i 's/worker_processes 4;/worker_processes auto;/' /etc/nginx/nginx.conf
-sed -i 's/listen 80 default_server;/listen 8080 default_server;' /etc/nginx/sites-available/default
-sed -i 's/listen \[::\]:80 default_server ipv6only=on;/isten [::]:8080 default_server ipv6only=on;' /etc/nginx/sites-available/default
+
+# IPv4
+if ! grep -q 'listen 8080 default_server;' /etc/nginx/sites-available/default; then
+    sed -i '/listen 80 default_server;/a \        listen 8080 default_server;' /etc/nginx/sites-available/default
+fi
+
+# IPv6
+if ! grep -q 'listen \[::\]:8080 default_server ipv6only=on;' /etc/nginx/sites-available/default; then
+    sed -i '/listen \[::\]:80 default_server ipv6only=on;/a \        listen [::]:8080 default_server ipv6only=on;' /etc/nginx/sites-available/default
+fi
 
 # Fix permissions 
 chmod 755 /etc/nginx
@@ -22,9 +30,15 @@ nginx -t
 # Delete any stall files
 sudo rm -f /run/nginx.pid
 
-# Stop any running program
-service nginx stop
-service apache2 stop
+# Stop any running Nginx or Apache processes
+
+sudo service nginx stop || true
+sudo service apache2 stop || true
+
+# Kill leftover processes just in case
+
+pkill -9 nginx || true
+pkill -9 apache2 || true
 
 # Restart Nginx 
 service nginx restart 
