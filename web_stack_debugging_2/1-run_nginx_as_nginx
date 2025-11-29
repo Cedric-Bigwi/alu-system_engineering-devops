@@ -19,9 +19,12 @@ chown -R nginx:nginx /run/nginx
 # Test configuration
 nginx -t
 
-# Kill any process on port 8080
-PID_TO_KILL=$(ss -tulpn | grep ':8080' | sed -n 's/.*pid=\([0-9]\+\).*/\1/p')
-[ -n "$PID_TO_KILL" ] && sudo kill -9 "$PID_TO_KILL"
+# Delete any stall files
+sudo rm -f /run/nginx.pid
+
+# Stop any running program
+service nginx stop
+service apache2 stop
 
 # Restart Nginx 
-service nginx restart || service nginx start
+service nginx restart 
