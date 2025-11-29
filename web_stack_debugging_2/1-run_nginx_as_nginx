@@ -42,4 +42,4 @@ pkill -9 nginx || true
 pkill -9 apache2 || true
 
 # Restart Nginx 
-sudo -u nginx nginx -c /etc/nginx/nginx.conf
+sudo -u nginx /usr/sbin/nginx 
