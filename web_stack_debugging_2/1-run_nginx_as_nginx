@@ -2,19 +2,13 @@
 # Configure Nginx to run as nginx user and listen on port 8080
 
 
-#Update nginx.conf
+# Update nginx.conf
 sed -i 's|^\s*#\?user .*;|user nginx;|' /etc/nginx/nginx.conf
 sed -i 's|^\s*pid .*;|pid /tmp/nginx.pid;|' /etc/nginx/nginx.conf
 
-# Add listen on 8080 if not already present
-if ! grep -q 'listen 8080 default_server;' /etc/nginx/sites-available/default; then
-    sed -i '/listen 80 default_server;/a \        listen 8080 default_server;' /etc/nginx/sites-available/default
-fi
-
-# Add listen on [::]:8080 if not already present
-if ! grep -q 'listen \[::\]:8080 default_server ipv6only=on;' /etc/nginx/sites-available/default; then
-    sed -i '/listen \[::\]:80 default_server ipv6only=on;/a \        listen [::]:8080 default_server ipv6only=on;' /etc/nginx/sites-available/default
-fi
+# Make it listen on port 8080
+sed -i 's|listen 80 default_server;|listen 8080 default_server;|' /etc/nginx/sites-available/default
+sed -i 's|listen [::]:80 default_server;|listen [::]:8080 default_server;|' /etc/nginx/sites-available/default
 
 # Fix permissions 
 chmod 755 /etc/nginx
