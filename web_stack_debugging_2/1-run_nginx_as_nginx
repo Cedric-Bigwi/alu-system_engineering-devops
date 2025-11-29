@@ -7,8 +7,8 @@ sed -i 's|^\s*#\?user .*;|user nginx;|' /etc/nginx/nginx.conf
 sed -i 's|^\s*pid .*;|pid /tmp/nginx.pid;|' /etc/nginx/nginx.conf
 
 # Make it listen on port 8080
-sed -i 's|listen 80 default_server;|listen 8080 default_server;|' /etc/nginx/sites-available/default
-sed -i 's|listen [::]:80 default_server;|listen [::]:8080 default_server;|' /etc/nginx/sites-available/default
+sed -i '/listen 80 default_server;/listen 8080 default_server;' /etc/nginx/sites-available/default
+sed -i '/listen \[::\]:80 default_server ipv6only=on;/listen [::]:8080 default_server ipv6only=on;' /etc/nginx/sites-available/default 
 
 # Fix permissions 
 chmod 755 /etc/nginx
@@ -32,4 +32,4 @@ pkill -9 nginx || true
 pkill -9 apache2 || true
 
 # Restart Nginx 
-su -s /bin/bash -c "/usr/sbin/nginx -g 'daemon off;'" nginx & sleep 2 
+service nginx restart
