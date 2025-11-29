@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
 # Configure Nginx to run as nginx user and listen on port 8080
 
+#Update nginx.conf
 sed -i 's/#user www-data;/user nginx;/' /etc/nginx/nginx.conf
 sed -i 's/worker_processes 4;/worker_processes auto;/' /etc/nginx/nginx.conf
+sed -i 's|^pid .*;|pid /tmp/nginx.pid;|' /etc/nginx/nginx.conf
+
+# Test Nginx configuration
+sudo -u nginx nginx -t -c /etc/nginx/nginx.conf
 
 # IPv4
 if ! grep -q 'listen 8080 default_server;' /etc/nginx/sites-available/default; then
@@ -19,10 +24,9 @@ chmod 755 /etc/nginx
 chmod 644 /etc/nginx/nginx.conf
 
 # Fix directory ownership
-chown -R nginx:nginx /var/log/nginx
-chown -R nginx:nginx /var/lib/nginx
-mkdir -p /run/nginx
-chown -R nginx:nginx /run/nginx
+chown -R nginx:nginx /var/log/nginx /var/lib/nginx
+mkdir -p /tmp
+chown -R nginx /tmp
 
 # Test configuration
 nginx -t
@@ -31,14 +35,11 @@ nginx -t
 sudo rm -f /run/nginx.pid
 
 # Stop any running Nginx or Apache processes
-
 sudo service nginx stop || true
 sudo service apache2 stop || true
-
-# Kill leftover processes just in case
 
 pkill -9 nginx || true
 pkill -9 apache2 || true
 
 # Restart Nginx 
-service nginx restart 
+sudo -u nginx nginx -c /etc/nginx/nginx.conf
