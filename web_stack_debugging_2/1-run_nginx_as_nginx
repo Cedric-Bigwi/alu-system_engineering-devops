@@ -1,35 +1,28 @@
 #!/usr/bin/env bash
 # Configure Nginx to run as nginx user and listen on port 8080
 
-
 # Update nginx.conf
-sed -i 's|^\s*#\?user .*;|user nginx;|' /etc/nginx/nginx.conf
+
+sed -i 's|^\s*#?user .*;|user nginx;|' /etc/nginx/nginx.conf
 sed -i 's|^\s*pid .*;|pid /tmp/nginx.pid;|' /etc/nginx/nginx.conf
 
-# Make it listen on port 8080
+# Update default site to listen on port 8080 (IPv4 & IPv6)
+
 sed -i 's|listen 80 default_server;|listen 8080 default_server;|' /etc/nginx/sites-available/default
 sed -i 's|listen [::]:80 default_server;|listen [::]:8080 default_server;|' /etc/nginx/sites-available/default
 
-# Fix permissions 
+# Fix ownership and permissions
+
+chown -R nginx:nginx /var/lib/nginx /var/log/nginx /tmp
+chmod 755 /tmp
 chmod 755 /etc/nginx
 chmod 644 /etc/nginx/nginx.conf
 
-# Fix directory ownership
-chown -R nginx:nginx /var/log/nginx /var/lib/nginx
-mkdir -p /tmp
-chown -R nginx:nginx /tmp
-chmod 755 /tmp
-
-# Delete any stall files
-sudo rm -f /run/nginx.pid
-
 # Stop any running Nginx or Apache processes
-sudo service nginx stop || true
-sudo service apache2 stop || true
 
-# Kill leftover processes 
 pkill -9 nginx || true
 pkill -9 apache2 || true
 
-# Restart Nginx 
-su -s /bin/bash -c "/usr/sbin/nginx -g 'daemon off;'" nginx & sleep 2
+# Start Nginx
+service nginx restart
+sleep 2  
